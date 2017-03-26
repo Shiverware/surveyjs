@@ -8,7 +8,6 @@ import {QuestionCheckboxModel} from "./question_checkbox";
 import {QuestionRadiogroupModel} from "./question_radiogroup";
 import {QuestionTextModel} from "./question_text";
 import {QuestionCommentModel} from "./question_comment";
-import {ChoicesRestfull} from "./choicesRestfull";
 import {QuestionFactory} from "./questionfactory";
 
 export interface IMatrixDropdownData {
@@ -28,11 +27,9 @@ export class MatrixDropdownColumn extends Base {
     public inputType: string = "text";
     public placeHolder: string;
     public choicesOrder: string = "none";
-    public choicesByUrl: ChoicesRestfull;
     private colCountValue: number = -1;
     constructor(public name: string, title: string = null) {
         super();
-        this.choicesByUrl = new ChoicesRestfull();
     }
     public getType() { return "matrixdropdowncolumn" }
     public get title() { return this.titleValue ? this.titleValue : this.name; }
@@ -330,10 +327,6 @@ export class QuestionMatrixDropdownModelBase extends Question implements IMatrix
     protected setSelectBaseProperties(question: QuestionSelectBase, column: MatrixDropdownColumn) {
         question.choicesOrder = column.choicesOrder;
         question.choices = this.getColumnChoices(column);
-        question.choicesByUrl.setData(column.choicesByUrl);
-        if(!question.choicesByUrl.isEmpty) {
-            question.choicesByUrl.run();
-        }
     }
     protected createText(name: string, column: MatrixDropdownColumn): QuestionTextModel {
         var q = <QuestionTextModel>this.createCellQuestion("text", name);
@@ -375,7 +368,6 @@ JsonObject.metaData.addClass("matrixdropdowncolumn", ["name", { name: "title", o
         "optionsCaption", { name: "cellType", default: "default", choices: ["default", "dropdown", "checkbox", "radiogroup", "text", "comment"] },
         { name: "colCount", default: -1, choices: [-1, 0, 1, 2, 3, 4] }, "isRequired:boolean", "hasOther:boolean", "minWidth", "placeHolder",
         { name: "choicesOrder", default: "none", choices: ["none", "asc", "desc", "random"] },
-        { name: "choicesByUrl:restfull", className: "ChoicesRestfull", onGetValue: function (obj: any) { return obj.choicesByUrl.isEmpty ? null : obj.choicesByUrl; }, onSetValue: function (obj: any, value: any) { obj.choicesByUrl.setData(value); } },
         { name: "inputType", default: "text", choices: ["color", "date", "datetime", "datetime-local", "email", "month", "number", "password", "range", "tel", "text", "time", "url", "week"] }],
         
     function () { return new MatrixDropdownColumn(""); });

@@ -6,7 +6,6 @@ export {
     SurveyValidator, TextValidator, ValidatorResult, ValidatorRunner
 } from "../../validator";
 export {Base, Event, ItemValue, SurveyError, ISurvey} from "../../base";
-export {ChoicesRestfull} from "../../choicesRestfull";
 export {Condition, ConditionNode, ConditionRunner} from "../../conditions";
 export {ConditionsParser} from "../../conditionsParser";
 export {ProcessValue} from "../../conditionProcessValue";
@@ -45,7 +44,6 @@ export {
 export {SurveyWindowModel} from "../../surveyWindow";
 export {TextPreProcessor} from "../../textPreProcessor";
 
-export {dxSurveyService} from "../../dxSurveyService";
 export {surveyLocalization, surveyStrings} from "../../surveyStrings";
 export {QuestionCustomWidget, CustomWidgetCollection} from "../../questionCustomWidgets";
 

@@ -3,7 +3,6 @@ import {Question} from "./question";
 import {ItemValue, SurveyError} from "./base";
 import {surveyLocalization} from "./surveyStrings";
 import {CustomError} from "./error";
-import {ChoicesRestfull} from "./choicesRestfull";
 
 export class QuestionSelectBase extends Question {
     private visibleChoicesCache: Array<ItemValue> = null;
@@ -13,16 +12,12 @@ export class QuestionSelectBase extends Question {
     private choicesFromUrl: Array<ItemValue> = null;
     private cachedValueForUrlRequestion: any = null;
     private choicesValues: Array<ItemValue> = new Array<ItemValue>();
-    public choicesByUrl: ChoicesRestfull;
     public otherErrorText: string = null;
     public storeOthersAsComment: boolean = true;
     private choicesOrderValue: string = "none";
     choicesChangedCallback: () => void;
     constructor(name: string) {
         super(name);
-        this.choicesByUrl = this.createRestfull();
-        var self = this;
-        this.choicesByUrl.getResultCallback = function (items: Array<ItemValue>) { self.onLoadChoicesFromUrl(items) };
     }
     public get isOtherSelected(): boolean {
         return this.getStoreOthersAsComment() ? this.getHasOther(this.value) : this.getHasOther(this.cachedValue);
@@ -30,7 +25,6 @@ export class QuestionSelectBase extends Question {
     protected getHasOther(val: any): boolean {
         return val == this.otherItem.value;
     }
-    protected createRestfull(): ChoicesRestfull { return new ChoicesRestfull(); }
     protected getComment(): string {
         if (this.getStoreOthersAsComment()) return super.getComment();
         return this.commentValue;
@@ -124,14 +118,10 @@ export class QuestionSelectBase extends Question {
     }
     protected getStoreOthersAsComment() { return this.storeOthersAsComment && (this.survey != null ? this.survey.storeOthersAsComment : true); }
     onSurveyLoad() {
-        if (this.choicesByUrl) this.choicesByUrl.run();
     }
     private onLoadChoicesFromUrl(array: Array<ItemValue>) {
         var errorCount = this.errors.length;
         this.errors = [];
-        if (this.choicesByUrl && this.choicesByUrl.error) {
-            this.errors.push(this.choicesByUrl.error);
-        }
         if (errorCount > 0 || this.errors.length > 0) {
             this.fireCallback(this.errorsChangedCallback);
         }
@@ -191,7 +181,6 @@ export class QuestionCheckboxBase extends QuestionSelectBase {
 JsonObject.metaData.addClass("selectbase", ["hasComment:boolean", "hasOther:boolean",
     { name: "choices:itemvalues", onGetValue: function (obj: any) { return ItemValue.getData(obj.choices); }, onSetValue: function (obj: any, value: any) { obj.choices = value; }},
     { name: "choicesOrder", default: "none", choices: ["none", "asc", "desc", "random"] },
-    { name: "choicesByUrl:restfull", className: "ChoicesRestfull", onGetValue: function (obj: any) { return obj.choicesByUrl.isEmpty ? null : obj.choicesByUrl; }, onSetValue: function (obj: any, value: any) { obj.choicesByUrl.setData(value); } },
     { name: "otherText", default: surveyLocalization.getString("otherItemText") }, "otherErrorText",
     { name: "storeOthersAsComment:boolean", default: true}], null, "question");
 

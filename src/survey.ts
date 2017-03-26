@@ -4,7 +4,6 @@ import {ISurveyTriggerOwner, SurveyTrigger} from "./trigger";
 import {PageModel} from "./page";
 import {TextPreProcessor} from "./textPreProcessor";
 import {ProcessValue} from "./conditionProcessValue";
-import {dxSurveyService} from "./dxSurveyService";
 import {JsonError} from "./jsonobject";
 import {surveyLocalization} from "./surveyStrings";
 import {QuestionBase} from "./questionbase";
@@ -418,13 +417,7 @@ export class SurveyModel extends Base implements ISurvey, ISurveyTriggerOwner {
     }
     protected uploadFileCore(name: string, file: File, uploadingCallback: (status: string) => any) {
         var self = this;
-        if (uploadingCallback) uploadingCallback("uploading");
-        new dxSurveyService().sendFile(this.surveyPostId, file, function (success: boolean, response: any) {
-            if (uploadingCallback) uploadingCallback(success ? "success" : "error");
-            if (success) {
-                self.setValue(name, response);
-            }
-        });
+        if (uploadingCallback) uploadingCallback("error");
     }
     getPage(index: number): PageModel {
         return this.pages[index];
@@ -575,15 +568,11 @@ export class SurveyModel extends Base implements ISurvey, ISurveyTriggerOwner {
         }
         if (isPartialCompleted && !this.clientId) return;
         var self = this;
-        new dxSurveyService().sendResult(postId, this.data, function (success: boolean, response: any) {
-            self.onSendResult.fire(self, { success: success, response: response});
-        }, this.clientId, isPartialCompleted);
+        self.onSendResult.fire(self, { success: "error", response: ""});
     }
     public getResult(resultId: string, name: string) {
         var self = this;
-        new dxSurveyService().getResult(resultId, name, function (success: boolean, data: any, dataList: any[], response: any) {
-            self.onGetResult.fire(self, { success: success, data: data, dataList: dataList, response: response });
-        });
+        self.onGetResult.fire(self, { success: "error", data: "", dataList: "", response: "" });
     }
     public loadSurveyFromService(surveyId: string = null) {
         if (surveyId) {
@@ -592,14 +581,7 @@ export class SurveyModel extends Base implements ISurvey, ISurveyTriggerOwner {
         var self = this;
         this.isLoading = true;
         this.onLoadingSurveyFromService();
-        new dxSurveyService().loadSurvey(this.surveyId, function (success: boolean, result: string, response: any) {
-            self.isLoading = false;
-            if (success && result) {
-                self.setJsonObject(result);
-                self.notifyAllQuestionsOnValueChanged();
-                self.onLoadSurveyFromService();
-            }
-        });
+        self.isLoading = false;
     }
     protected onLoadingSurveyFromService() {
     }
