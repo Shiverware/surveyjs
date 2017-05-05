@@ -1,7 +1,7 @@
 function init() {
     var json = { title: "Product Feedback Survey Example", showProgressBar: "top", pages: [
         {questions: [
-            { type: "matrix", name: "Quality", title: "Please indicate if you agree or disagree with the following statements",
+            { type: "matrix", name: "Quality", title: "Please indicate if you <b>agree</b> or <u>disagree</u> with the following statements",
                 columns: [{ value: 1, text: "Strongly Disagree" },
                     { value: 2, text: "Disagree" },
                     { value: 3, text: "Neutral" },

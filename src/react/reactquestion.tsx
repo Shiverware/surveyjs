@@ -110,7 +110,8 @@ export class SurveyQuestion extends React.Component<any, any> {
     }
     protected renderTitle(): JSX.Element {
         var titleText = this.question.fullTitle;
-        return (<h5 className={this.css.question.title}>{titleText}</h5>);
+        var htmlValue = { __html: titleText };
+        return (<h5 className={this.css.question.title} dangerouslySetInnerHTML={htmlValue}></h5>);
     }
     protected renderComment(): JSX.Element {
         return (<div>
